@@ -1,0 +1,17 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+
+body, html {
+  height: 100%;
+}
+
+
+div#root {
+  height: 100%;
+}
+
+div.app {
+  height:  100%;
+}
