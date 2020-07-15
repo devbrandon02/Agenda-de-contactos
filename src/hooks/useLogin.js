@@ -1,13 +1,13 @@
 import { useState } from "react";
 // import { clienteAxios } from '../axios/axios';
-let URL = "http://localhost:4000/api/auth";
+let URL = "http://192.168.0.23:4000/api/auth";
 
 const useLogin = async (email, password) => {
   let dataForm = {
     email,
     password,
   };
-  
+
   return await fetch(URL, {
     method: "POST",
     body: JSON.stringify(dataForm),

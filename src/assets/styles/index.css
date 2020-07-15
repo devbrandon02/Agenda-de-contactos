@@ -3,15 +3,9 @@
   margin: 0;
 }
 
-body, html {
+html, body, #root, .App {
+  position: fixed;
+  overflow: auto;
   height: 100%;
-}
-
-
-div#root {
-  height: 100%;
-}
-
-div.app {
-  height:  100%;
+  width: 100%;
 }

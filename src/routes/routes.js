@@ -2,6 +2,7 @@ import React from 'react'
 import {Route, Switch , BrowserRouter  } from 'react-router-dom'
 import Home from '../components/Home'
 import Login from '../components/Login'
+import Register from '../components/Register'
 
 const routes = () => {
   return (
@@ -18,7 +19,13 @@ const routes = () => {
           exact
           path='/auth'
           component={Login}
-        />
+	/>
+
+	<Route
+	  exact
+	  path='/register'
+	  component={Register}
+	/>
         
       </Switch>
     </BrowserRouter> 

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo } from 'react'
 import { makeStyles } from '@material-ui/core'
 import { Navbar, Nav } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
@@ -25,7 +25,7 @@ const useStyle = makeStyles({
 })
 
 
-const Header = ({logged}) => {
+const Header = memo(({logged}) => {
   const classes = useStyle()
   const wrapper = React.createRef();
   console.log(logged)
@@ -34,15 +34,15 @@ const Header = ({logged}) => {
     <Fragment>
       <Navbar
         fixed="top"
-        collapseOnSelect 
+        collapseOnSelect
         expand="lg"
-        className={classes.nav} 
-        bg="dark" 
+        className={classes.nav}
+        bg="dark"
         variant="dark"
       >
 
-        <Link 
-          className={classes.logo} 
+        <Link
+          className={classes.logo}
           to={'/'}>
           <h2 >Logo</h2>
         </Link>
@@ -57,11 +57,11 @@ const Header = ({logged}) => {
             </Nav.Link>
           </Nav>
 
-          {logged 
+          {logged
           ? <Link
-              to={'/register'}
+              to={'/contacts'}
               className={classes.navbarLink}>
-              hola
+              Ver Contactos
           </Link>
 
           : <Link
@@ -70,12 +70,12 @@ const Header = ({logged}) => {
               Registro
             </Link>
          }
-            
+
         </Navbar.Collapse>
 
       </Navbar>
     </Fragment>
   )
-}
+})
 
 export default Header
