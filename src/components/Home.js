@@ -7,6 +7,7 @@ import Header from './Header';
 import Footer from './Footer';
 
 
+
 const useStyle = makeStyles({
   container: {
     height: '100%',
@@ -41,13 +42,13 @@ const Home = (props) => {
       <Header/>
       <div className={classes.container}>
         <Homepage>
-          <h1 
+          <h1
             className={classes.title}>
             { titleHome }
           </h1>
-
-          <Button 
-            color="primary"> 
+						
+          <Button
+            color="primary">
             Ver Contactos
           </Button>
 

@@ -1,17 +1,16 @@
-import React, {Fragment, useState} from "react";
-import {makeStyles} from "@material-ui/core";
-import {Form, Button, Alert} from "react-bootstrap";
-import Swal from 'sweetalert2';
+import React, { Fragment, useState } from "react";
+import { makeStyles } from "@material-ui/core";
+import { Form, Button, Alert } from "react-bootstrap";
+import { Link } from 'react-router-dom'
 import "animate.css";
 
 import fondoHome from "../assets/image/fondo-homepage.jpg";
-import useLogin from "../hooks/useLogin";
+import {useLogin} from "../hooks/useLogin";
 import Header from "./Header";
 
 export const useStyle = makeStyles({
   container: {
     display: "flex",
-    width: "100%",
     height: "100%",
     backgroundImage: `url(${fondoHome})`,
     backgroundSize: "cover",
@@ -25,10 +24,11 @@ export const useStyle = makeStyles({
     flexDirection: "column",
     margin: 0,
     backgroundColor: `rgba(9,10,10,0.5)`,
-    height: "100%",
+    height: "90%",
     width: "400px",
     justifyContent: "center",
     borderRadius: "5px",
+    marginTop: "50px",
     // border: '1px solid #eee'
   },
   subtitleForm: {
@@ -47,6 +47,11 @@ export const useStyle = makeStyles({
     display: "block",
     paddingBottom: "20px",
     width: "100%",
+    textAlign: 'center'
+  },
+  enlaceRegister:{
+    display: 'block',
+    marginTop: '40px',
     textAlign: 'center'
   }
 });
@@ -76,7 +81,7 @@ const Login = (props) => {
         //console.log(data);
         if (data.ok) {
           setLoading(false)
-          props.history.push('contacts')
+          props.history.push('/contacts')
 
         } else {
           setError(true);
@@ -93,7 +98,6 @@ const Login = (props) => {
     <div className={classes.container}>
       <div className={classes.containerLogin}>
         <Form
-          autoComplete="false"
           onSubmit={HandleSubmit}
           className="animate__animated animate__bounce"
         >
@@ -132,6 +136,12 @@ const Login = (props) => {
           <Button type="submit" className={classes.btnLogin}>
             Iniciar Sesion
           </Button>
+
+          <Link 
+            to={'/register'}
+            className={classes.enlaceRegister}>
+            <p>¿Aun no tienes una cuenta?</p>
+          </Link>
 
         </Form>
 

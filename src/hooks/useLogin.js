@@ -1,8 +1,7 @@
-import { useState } from "react";
 // import { clienteAxios } from '../axios/axios';
 let URL = "http://192.168.0.23:4000/api/auth";
 
-const useLogin = async (email, password) => {
+export const useLogin = async (email, password) => {
   let dataForm = {
     email,
     password,
@@ -26,4 +25,5 @@ const useLogin = async (email, password) => {
     });
 };
 
-export default useLogin;
+
+
