@@ -4,7 +4,6 @@
 }
 
 html, body, #root, .App {
-  position: fixed;
   overflow: auto;
   height: 100%;
   width: 100%;

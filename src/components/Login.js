@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Modal } from "react-bootstrap";
 import { Link } from 'react-router-dom'
 import "animate.css";
 
@@ -8,7 +8,7 @@ import fondoHome from "../assets/image/fondo-homepage.jpg";
 import {useLogin} from "../hooks/useLogin";
 import Header from "./Header";
 
-export const useStyle = makeStyles({
+const useStyle = makeStyles({
   container: {
     display: "flex",
     height: "100%",
@@ -24,7 +24,7 @@ export const useStyle = makeStyles({
     flexDirection: "column",
     margin: 0,
     backgroundColor: `rgba(9,10,10,0.5)`,
-    height: "90%",
+    height: "100%",
     width: "400px",
     justifyContent: "center",
     borderRadius: "5px",

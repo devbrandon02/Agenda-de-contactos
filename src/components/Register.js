@@ -65,7 +65,7 @@ const Register = (props) => {
     password: "",
   });
 
-  const { name, last, email, password } = dataRegister;
+  const { name, email, password } = dataRegister;
 
   const handleChangeForm = ({ target }) => {
     setDataRegister({
