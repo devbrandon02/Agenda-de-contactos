@@ -1,11 +1,11 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Form, Button, Alert, Modal } from "react-bootstrap";
-import { Link } from 'react-router-dom'
+import { Form, Button, Alert } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "animate.css";
 
 import fondoHome from "../assets/image/fondo-homepage.jpg";
-import {useLogin} from "../hooks/useLogin";
+import { useLogin } from "../hooks/useLogin";
 import Header from "./Header";
 
 const useStyle = makeStyles({
@@ -16,7 +16,7 @@ const useStyle = makeStyles({
     backgroundSize: "cover",
     color: "#eee",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   containerLogin: {
     display: "flex",
@@ -33,41 +33,56 @@ const useStyle = makeStyles({
   },
   subtitleForm: {
     marginBottom: "60px",
-    textAlign: "center"
+    textAlign: "center",
   },
   btnLogin: {
     marginTop: "10px",
-    width: "300px"
+    width: "300px",
   },
   inputForm: {
-    marginBottom: "15px"
+    marginBottom: "15px",
   },
 
   divMensaje: {
     display: "block",
     paddingBottom: "20px",
     width: "100%",
-    textAlign: 'center'
+    textAlign: "center",
   },
-  enlaceRegister:{
-    display: 'block',
-    marginTop: '40px',
-    textAlign: 'center'
-  }
+  enlaceRegister: {
+    display: "block",
+    marginTop: "40px",
+    textAlign: "center",
+  },
 });
 
 const Login = (props) => {
   const classes = useStyle();
-  const [formValues, handleInputChange] = useState({email: "", password: ""});
+  const [formValues, handleInputChange] = useState({ email: "", password: "" });
   const [error, setError] = useState(false);
-  const [IsLogged, setIsLogged] = useState(false);
-  const {email, password} = formValues;
+  // const [IsLogged, setIsLogged] = useState(false);
+  const { email, password } = formValues;
   const [loading, setLoading] = useState(false);
+  
+  const [dataAuth, setdataAuth] = useState();
 
-  const HandleChange = ({target}) => {
+  useEffect(() => {
+    const redirectionContacts = () =>{
+      if(dataAuth){
+        props.history.push({
+          pathname:'/contacts',
+          data: dataAuth
+        })
+      }
+    }
+    redirectionContacts()
+    console.log('estado cambio')
+  }, [dataAuth])
+
+  const HandleChange = ({ target }) => {
     handleInputChange({
       ...formValues,
-      [target.name]: target.value
+      [target.name]: target.value,
     });
   };
 
@@ -77,90 +92,92 @@ const Login = (props) => {
     setLoading(true);
 
     useLogin(email, password)
-      .then((data) => {
-        //console.log(data);
-        if (data.ok) {
-          setLoading(false)
-          props.history.push('/contacts')
+      .then((response) => {
+
+        if(response.ok) {
+          setdataAuth({
+            nombre: response.usuarioDB.Nombre,
+            email: response.usuarioDB.Email,
+            id: response.usuarioDB._id
+          });
+
+          console.log(dataAuth)
 
         } else {
           setError(true);
-          setLoading(false)
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  return (<Fragment>
-    <Header logged={IsLogged}/>
+  return (
+    <Fragment>
+      <Header/>
 
-    <div className={classes.container}>
-      <div className={classes.containerLogin}>
-        <Form
-          onSubmit={HandleSubmit}
-          className="animate__animated animate__bounce"
-        >
-          <h3 className={classes.subtitleForm}>Inicio de sesion</h3>
+      <div className={classes.container}>
+        <div className={classes.containerLogin}>
+          <Form
+            onSubmit={HandleSubmit}
+            className="animate__animated animate__bounce"
+          >
+            <h3 className={classes.subtitleForm}>Inicio de sesion</h3>
 
-          {
-            error
-              ? <div className={classes.divMensaje}>
-                  <Alert variant="danger">Email o contraseña incorrecta</Alert>
-                </div>
-
-              : ''
-
-          }
-          <Form.Label>Email:</Form.Label>
-          <Form.Control
-            required="required"
-            name="email"
-            className={classes.inputForm}
-            type="email"
-            placeholder="example@correo.com"
-            onChange={HandleChange}
-            value={email}
-          />
-
-          <Form.Label>Contraseña:</Form.Label>
-          <Form.Control
-            required="required"
-            name="password"
-            className={classes.inputForm}
-            type="password"
-            placeholder="*********"
-            onChange={HandleChange}
-            value={password}
-          />
-          <Button type="submit" className={classes.btnLogin}>
-            Iniciar Sesion
-          </Button>
-
-          <Link 
-            to={'/register'}
-            className={classes.enlaceRegister}>
-            <p>¿Aun no tienes una cuenta?</p>
-          </Link>
-
-        </Form>
-
-        {
-          loading
-            ? <div className="sk-chase">
-                <div className="sk-chase-dot"></div>
-                <div className="sk-chase-dot"></div>
-                <div className="sk-chase-dot"></div>
-                <div className="sk-chase-dot"></div>
-                <div className="sk-chase-dot"></div>
-                <div className="sk-chase-dot"></div>
+            {error ? (
+              <div className={classes.divMensaje}>
+                <Alert variant="danger">Email o contraseña incorrecta</Alert>
               </div>
+            ) : (
+              ""
+            )}
+            <Form.Label>Email:</Form.Label>
+            <Form.Control
+              required="required"
+              name="email"
+              className={classes.inputForm}
+              type="email"
+              placeholder="example@correo.com"
+              onChange={HandleChange}
+              value={email}
+            />
 
-            : ''
-        }
+            <Form.Label>Contraseña:</Form.Label>
+            <Form.Control
+              required="required"
+              name="password"
+              className={classes.inputForm}
+              type="password"
+              placeholder="*********"
+              onChange={HandleChange}
+              value={password}
+            />
+            <Button type="submit" className={classes.btnLogin}>
+              Iniciar Sesion
+            </Button>
+
+            <Link to={"/register"} className={classes.enlaceRegister}>
+              <p>¿Aun no tienes una cuenta?</p>
+            </Link>
+          </Form>
+
+          {loading ? (
+            <div className="sk-chase">
+              <div className="sk-chase-dot"></div>
+              <div className="sk-chase-dot"></div>
+              <div className="sk-chase-dot"></div>
+              <div className="sk-chase-dot"></div>
+              <div className="sk-chase-dot"></div>
+              <div className="sk-chase-dot"></div>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
-    </div>
-  </Fragment>);
+    </Fragment>
+  );
 };
 
 export default Login;

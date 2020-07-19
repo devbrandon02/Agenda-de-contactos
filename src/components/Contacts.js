@@ -46,7 +46,8 @@ const useStyle = makeStyles({
 })
 
 
-const Contacts = () => {
+const Contacts = (props) => {
+  console.log(props)
   const classes = useStyle();
   const [show, setshow] = useState(false)
   
@@ -56,7 +57,8 @@ const Contacts = () => {
         <Container
           fluid="sm"
           className={classes.containerSecundario}>
-            <Modal
+
+           <Modal
               centered="true"
               show={show}
               className={classes.modal}
@@ -69,14 +71,14 @@ const Contacts = () => {
               </Modal.Header>
 
               <Modal.Body>
-                <Form
-                // onSubmit={handleSubmit}
-                 >
+                <Form>
                   <Form.Group>
+
                     <Form.Label>
                       Nombre: <span className={classes.spanRequired}>*</span>
                     </Form.Label>
                     <Form.Control
+                      required
                       className={classes.inputForm}
                       type="text"
                       minlenght="1"
@@ -123,6 +125,7 @@ const Contacts = () => {
             </Modal>
 
           <h3 className={classes.subtitle}>Tus Contactos</h3>
+
           <div className={classes.cardContactos}>
             <Button 
               variant="primary"
@@ -174,6 +177,7 @@ const Contacts = () => {
                 <Button variant="primary">Go somewhere</Button>
               </Card.Body>
             </Card>
+            
           </div>
         </Container>
         <Footer />

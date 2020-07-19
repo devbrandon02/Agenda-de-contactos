@@ -4,7 +4,6 @@ import Home from '../components/Home'
 import Login from '../components/Login'
 import Register from '../components/Register'
 import getContacts from '../components/Contacts'
-import registerContacts from '../components/registerContacts'
 
 
 
@@ -38,11 +37,6 @@ const routes = () => {
           component={getContacts}
         />
 
-        <Route
-          exact
-          path='/register-contacts'
-          component={registerContacts}
-        />
         
       </Switch>
     </BrowserRouter> 
