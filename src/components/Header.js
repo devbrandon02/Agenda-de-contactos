@@ -57,19 +57,18 @@ const Header = memo(({logged}) => {
             </Nav.Link>
           </Nav>
 
-          {logged
-          ? <Link
-              to={'/contacts'}
+          <Link
+              to={'/auth'}
               className={classes.navbarLink}>
-              Ver Contactos
+              login
           </Link>
 
-          : <Link
+           <Link
               to={'/register'}
               className={classes.navbarLink}>
               Registro
             </Link>
-         }
+         
 
         </Navbar.Collapse>
 

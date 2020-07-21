@@ -24,7 +24,7 @@ const useStyle = makeStyles({
     flexDirection: "column",
     margin: 0,
     backgroundColor: `rgba(9,10,10,0.5)`,
-    height: "100%",
+    height: "90%",
     width: "400px",
     justifyContent: "center",
     borderRadius: "5px",
@@ -63,21 +63,23 @@ const Login = (props) => {
   // const [IsLogged, setIsLogged] = useState(false);
   const { email, password } = formValues;
   const [loading, setLoading] = useState(false);
-  
-  const [dataAuth, setdataAuth] = useState();
+
+  const [jwt, setjwt] = useState();
 
   useEffect(() => {
-    const redirectionContacts = () =>{
-      if(dataAuth){
-        props.history.push({
-          pathname:'/contacts',
-          data: dataAuth
-        })
+    const redirectionContacts = () => {
+      if (jwt) {
+        const { token } = jwt
+        console.log(token)
+        localStorage.setItem('token', token)
+        props.history.push('/contacts')
       }
-    }
-    redirectionContacts()
-    console.log('estado cambio')
-  }, [dataAuth])
+    };
+
+    redirectionContacts();
+    console.log("estado cambio");
+    // eslint-disable-next-line
+  }, [jwt]);
 
   const HandleChange = ({ target }) => {
     handleInputChange({
@@ -93,15 +95,8 @@ const Login = (props) => {
 
     useLogin(email, password)
       .then((response) => {
-
-        if(response.ok) {
-          setdataAuth({
-            nombre: response.usuarioDB.Nombre,
-            email: response.usuarioDB.Email,
-            id: response.usuarioDB._id
-          });
-
-          console.log(dataAuth)
+        if (response.ok) {
+          setjwt(response.auth);
 
         } else {
           setError(true);
@@ -115,7 +110,7 @@ const Login = (props) => {
 
   return (
     <Fragment>
-      <Header/>
+      <Header />
 
       <div className={classes.container}>
         <div className={classes.containerLogin}>
@@ -134,6 +129,7 @@ const Login = (props) => {
             )}
             <Form.Label>Email:</Form.Label>
             <Form.Control
+              autoFocus={true}
               required="required"
               name="email"
               className={classes.inputForm}

@@ -1,189 +1,238 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Container, Card, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Card, Button, Modal, Form, Alert } from "react-bootstrap";
 import fondoContainer from "../assets/image/fondo-homepage.jpg";
-import Footer from '../components/Footer';
-
+import Footer from "../components/Footer";
+import CardContacts from "./CardContacts";
 
 const useStyle = makeStyles({
   containerSecundario: {
     backgroundColor: `rgba(9,10,10,0.5)`,
-    color: 'white',
-    height: '100%',
-    paddingTop: '40px',
-    paddingBottom: '30px',
+    color: "white",
+    height: "100%",
+    overflow: "auto",
+    paddingTop: "40px",
+    paddingBottom: "30px",
   },
   container: {
-    width: '100%',
-    height: 'auto',
+    width: "100%",
+    height: "100%",
     backgroundImage: `url(${fondoContainer})`,
   },
   cardContactos: {
-    width: '90%',
-    height: 'auto',
-    marginTop: '30px',
-    margin: '0 auto',
-    color: 'black'
+    width: "100%",
+    marginTop: "10px",
+    margin: "0",
+    color: "black",
   },
   subtitle: {
-    textAlign: 'center'
+    textAlign: "center",
+    marginBottom: "50px",
   },
-  cards:{
-    marginTop: '15px',
-    marginBottom: '10px',
+  cards: {
+    color: "#eee",
+    backgroundColor: "black",
+    width: "200%",
+    marginRight: "10px",
   },
-  modal:{
-    width: '100%',
-    height: '100%'
+  cardColumn: {
+    display: "inline-flex",
+    overflow: "auto",
+    width: "50%",
   },
-  btnModal:{
-    marginRight: '10px'
+  modal: {
+    width: "100%",
+    height: "100%",
   },
-  inputForm:{
-    marginBottom: '10px'
-  }
-
-})
-
+  btnModal: {
+    marginRight: "10px",
+  },
+  inputForm: {
+    marginBottom: "10px",
+  },
+});
 
 const Contacts = (props) => {
-  console.log(props)
   const classes = useStyle();
-  const [show, setshow] = useState(false)
-  
+  const [show, setshow] = useState(false);
+  const [data, setdata] = useState([]);
+  const [consultData, setconsultData] = useState(true);
+  const [jwt, setjwt] = useState(localStorage.getItem("token"));
+  const [payloadstate, setpayload] = useState()
+  let GlobalURL = "http://192.168.0.23:4000/api/contacts/";
+
+  const [formData, setformData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    console.log(payloadstate)
+  }, [data]);
+
+  useEffect(() => {
+    const itsAuth = async () => {
+      if (jwt) {
+        const payload = getPayload(jwt);
+        setpayload(payload)
+        let URL = `${GlobalURL}${payload.usuario.id}`;
+
+        await fetch(URL, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            token: jwt,
+          },
+        })
+          .then((res) => res.json())
+          .catch((err) => console.log(err))
+          .then((contacts) => {
+            setconsultData(false);
+            setdata(contacts.ContactosDb);
+          });
+      }
+    };
+    itsAuth();
+  }, [jwt]);
+
+  const getPayload = (jwt) => {
+    let base64Url = jwt.split(".")[1];
+    let base64 = base64Url.replace("-", "+").replace("_", "/");
+    let payloadData = JSON.parse(window.atob(base64));
+
+    return payloadData;
+  }
+
+
+  const registerContact = (contacts) => {
+    const { usuario } = payloadstate
+
+    console.log(contacts)
+    let contactsForm = {
+      id: usuario.id,
+      nombre: contacts.name,
+      email: contacts.email,
+      telefono: contacts.phone
+    }
+
+     fetch(GlobalURL, {
+      method: 'POST',
+      body: JSON.stringify(contactsForm),
+      headers: {
+        "Content-Type": "application/json"
+      }
+     }).then((res) => res.json())
+        .catch((err) => console.log(err))
+        .then((response => {
+          console.log(response);
+          setshow(false);
+        }))
+  }
+
+
+  const handleModal = (evt) => {
+    evt.preventDefault();
+    const { target } = evt;
+
+    console.log(evt.target.name);
+    setformData({
+      ...formData,
+      [target.name]: target.value,
+    });
+  };
+
+
+  const handleSubmitModal = (evt) => {
+    evt.preventDefault();
+    const { name, phone, email } = formData;
+    registerContact(formData)
+  }
+
   return (
     <Fragment>
       <div className={classes.container}>
-        <Container
-          fluid="sm"
-          className={classes.containerSecundario}>
+        <Container fluid="sm" className={classes.containerSecundario}>
+          <Modal
+            centered="true"
+            show={show}
+            className={classes.modal}
+            aria-labelledby="example-modal-sizes-title-sm"
+          >
+            <Modal.Header>
+              <Modal.Title centered="true" id="example-modal-sizes-title-sm">
+                Registra tus Contactos
+              </Modal.Title>
+            </Modal.Header>
 
-           <Modal
-              centered="true"
-              show={show}
-              className={classes.modal}
-              aria-labelledby="example-modal-sizes-title-sm">
+            <Modal.Body>
+              <Form onSubmit={ handleSubmitModal } >
+                <Form.Group>
+                  <Form.Label>
+                    Nombre: <span className={classes.spanRequired}>*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    className={classes.inputForm}
+                    type="text"
+                    minlenght="1"
+                    name="name"
+                    onChange={handleModal}
+                  />
 
-              <Modal.Header>
-                <Modal.Title centered="true"id="example-modal-sizes-title-sm">
-                  Registra tus Contactos
-                </Modal.Title>
-              </Modal.Header>
+                  <Form.Label>N°Telefono:</Form.Label>
+                  <Form.Control
+                    className={classes.inputForm}
+                    type="number"
+                    maxlenght="11"
+                    name="phone"
+                    onChange={handleModal}
+                    required
+                  />
 
-              <Modal.Body>
-                <Form>
-                  <Form.Group>
+                  <Form.Label> Email: </Form.Label>
+                  <Form.Control
+                    className={classes.inputForm}
+                    type="email"
+                    name="email"
+                    onChange={handleModal}
+                  />
+                </Form.Group>
 
-                    <Form.Label>
-                      Nombre: <span className={classes.spanRequired}>*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      className={classes.inputForm}
-                      type="text"
-                      minlenght="1"
-                      name="name"
-                    />
+                <Button
+                  className={classes.btnModal}
+                  type="submit"
+                  variant="primary">
+                  Registrar Contacto
+                </Button>
 
-                    <Form.Label>N°Telefono:</Form.Label>
-                    <Form.Control
-                      className={classes.inputForm}
-                      type="text"
-                      maxlenght="11"
-                      name="phone"
-                    />
-
-                    <Form.Label> Email: </Form.Label>
-                    <Form.Control
-                      className={classes.inputForm}
-                      type="email"
-                      name="email"
-                    />
-
-                    <Form.Label>Direccion:</Form.Label>
-                    <Form.Control
-                      className={classes.inputForm}
-                      type="text"
-                      name="address"
-                    />
-                  </Form.Group>
-
-                  <Button
-                    className={classes.btnModal}
-                    type="submit"
-                    variant="primary">
-                    Registrar Contacto
-                  </Button>
-
-                  <Button
-                    onClick={() => setshow(false)}
-                    variant="danger">
-                    Cancelar
-                  </Button>
-                </Form>
-              </Modal.Body>
-            </Modal>
+                <Button onClick={() => setshow(false)} variant="danger">
+                  Cancelar
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
 
           <h3 className={classes.subtitle}>Tus Contactos</h3>
+          <Button onClick={() => setshow(true)} variant="primary">
+            Guardar Nuevo Contacto
+          </Button>
 
-          <div className={classes.cardContactos}>
-            <Button 
-              variant="primary"
-              onClick={() => setshow(true) }>
-              
-              Guardar Nuevo Contacto
-            </Button>
-
-            <Card className={classes.cards}>
-              <Card.Header>Featured</Card.Header>
-              <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
-                <Card.Text>
-                  With supporting text below as a natural lead-in to additional content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-
-            <Card className={classes.btnCrearContacto}>
-              <Card.Header>Featured</Card.Header>
-              <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
-                <Card.Text>
-                  With supporting text below as a natural lead-in to additional content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-
-            <Card>
-              <Card.Header>Featured</Card.Header>
-              <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
-                <Card.Text>
-                  With supporting text below as a natural lead-in to additional content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-
-            <Card>
-              <Card.Header>Featured</Card.Header>
-              <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
-                <Card.Text>
-                  With supporting text below as a natural lead-in to additional content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-            
-          </div>
+          {data.length <= 0 ? (
+            <Alert variant="info">No tiene contactos registrados</Alert>
+          ) : (
+            <CardContacts
+              cardContactos={classes.cardContactos}
+              card={classes.cards}
+              contactsData={data}
+              cardColumn={classes.cardColumn}
+            />
+          )}
         </Container>
-        <Footer />
       </div>
+      <Footer />
     </Fragment>
-  )
-}
+  );
+};
 
-export default Contacts
+export default Contacts;

@@ -63,3 +63,18 @@ body{
     transform: scale(1.0);
   }
 }
+
+.card-columns {
+    display: inline-flex;
+    width: 50%;
+    overflow: auto;
+}
+
+@media (max-width: 576px){
+  .card-columns {
+    display: inline-flex;
+    width: 100%;
+    overflow: auto;
+
+  }
+}
