@@ -118,7 +118,10 @@ const Register = (props) => {
                 minlenght="1"
                 name="name"
                 onChange={handleChangeForm}
+                autoFocus={true}
+                placeholder="Tu nombre"
               />
+
               <Form.Label>Apellido:</Form.Label>
               <Form.Control
                 className={classes.inputForm}
@@ -126,6 +129,7 @@ const Register = (props) => {
                 minlenght="1"
                 name="last"
                 onChange={handleChangeForm}
+                placeholder="Tu Apellido"              
               />
 
               <Form.Label>
@@ -137,6 +141,7 @@ const Register = (props) => {
                 minlenght="5"
                 name="email"
                 onChange={handleChangeForm}
+                placeholder="example@correo.com"
               />
 
               <Form.Label>
@@ -148,6 +153,7 @@ const Register = (props) => {
                 minlenght="6"
                 name="password"
                 onChange={handleChangeForm}
+                placeholder="*********"
               />
             </Form.Group>
 

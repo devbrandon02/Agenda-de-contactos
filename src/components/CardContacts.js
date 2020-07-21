@@ -1,10 +1,14 @@
-import React, { Fragment} from 'react'
+import React, { Fragment, useEffect, useState} from 'react'
 import {Card, Button, CardColumns, Alert } from "react-bootstrap";
 
 
 const CardContacts = (props) => {
-  const { card, cardContactos, contactsData} = props
-  
+  const { 
+    card, 
+    cardContactos, 
+    contactsData, 
+    btnmodal } = props
+
 
   return (
     <Fragment>
@@ -25,7 +29,18 @@ const CardContacts = (props) => {
                 <Card.Text>
                   Email: { contact.Email }
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
+                <Button
+                  onClick={() => alert('Esta funcionalidad aun no esta desarrollada :v')}
+                  className={btnmodal} 
+                  variant="primary">
+                  Actualizar
+                </Button>
+
+                <Button
+                  onClick={() => alert('Esta funcionalidad aun no esta desarrollada :v')}
+                  variant="danger">
+                  Eliminar
+                </Button>
               </Card.Body>
             </Card>
 

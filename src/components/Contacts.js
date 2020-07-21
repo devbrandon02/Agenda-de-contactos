@@ -59,7 +59,8 @@ const Contacts = (props) => {
   const [consultData, setconsultData] = useState(true);
   const [jwt, setjwt] = useState(localStorage.getItem("token"));
   const [payloadstate, setpayload] = useState()
-  let GlobalURL = "http://192.168.0.23:4000/api/contacts/";
+  let GlobalURL = "https://agendacontactocfcf.herokuapp.com/";
+
 
   const [formData, setformData] = useState({
     name: "",
@@ -68,12 +69,13 @@ const Contacts = (props) => {
   });
 
   useEffect(() => {
-    console.log(payloadstate)
-  }, [data]);
+    console.log('consult data cambio')
+  },[data])
 
   useEffect(() => {
+
     const itsAuth = async () => {
-      if (jwt) {
+      if (jwt && consultData) {
         const payload = getPayload(jwt);
         setpayload(payload)
         let URL = `${GlobalURL}${payload.usuario.id}`;
@@ -83,18 +85,25 @@ const Contacts = (props) => {
           headers: {
             "Content-Type": "application/json",
             token: jwt,
-          },
+          }
         })
           .then((res) => res.json())
           .catch((err) => console.log(err))
           .then((contacts) => {
-            setconsultData(false);
             setdata(contacts.ContactosDb);
+            setconsultData(false);
+            console.log('contactos')
           });
+      } 
+      else if(jwt == null){
+        console.log('se redirecciona')
+        props.history.push('/auth')
       }
     };
+
     itsAuth();
-  }, [jwt]);
+  }, [data]);
+
 
   const getPayload = (jwt) => {
     let base64Url = jwt.split(".")[1];
@@ -103,12 +112,32 @@ const Contacts = (props) => {
 
     return payloadData;
   }
+  
 
+  const handleSubmitModal = (evt) => {
+    evt.preventDefault();
+    registerContact(formData)
+  }
+  
+
+  const handleModal = (evt) => {
+    const { target } = evt;
+    console.log(evt.target.name);
+    setformData({
+      ...formData,
+      [target.name]: target.value,
+      
+    });
+
+    
+  };
+ 
+  
 
   const registerContact = (contacts) => {
     const { usuario } = payloadstate
-
     console.log(contacts)
+
     let contactsForm = {
       id: usuario.id,
       nombre: contacts.name,
@@ -117,36 +146,22 @@ const Contacts = (props) => {
     }
 
      fetch(GlobalURL, {
-      method: 'POST',
-      body: JSON.stringify(contactsForm),
-      headers: {
-        "Content-Type": "application/json"
-      }
-     }).then((res) => res.json())
-        .catch((err) => console.log(err))
-        .then((response => {
-          console.log(response);
-          setshow(false);
-        }))
-  }
+        method: 'POST',
+        body: JSON.stringify(contactsForm),
 
+        headers: {
+          "Content-Type": "application/json"
+        }
+     })
 
-  const handleModal = (evt) => {
-    evt.preventDefault();
-    const { target } = evt;
-
-    console.log(evt.target.name);
-    setformData({
-      ...formData,
-      [target.name]: target.value,
-    });
-  };
-
-
-  const handleSubmitModal = (evt) => {
-    evt.preventDefault();
-    const { name, phone, email } = formData;
-    registerContact(formData)
+     .then((res) => res.json())
+     .catch((err) => console.log(err))
+     .then((response => {
+        console.log(response);
+        setshow(false);
+        setconsultData(true)
+        props.history.push('/contacts')
+      }))
   }
 
   return (
@@ -178,6 +193,7 @@ const Contacts = (props) => {
                     minlenght="1"
                     name="name"
                     onChange={handleModal}
+                    autoFocus={true}
                   />
 
                   <Form.Label>N°Telefono:</Form.Label>
@@ -206,7 +222,9 @@ const Contacts = (props) => {
                   Registrar Contacto
                 </Button>
 
-                <Button onClick={() => setshow(false)} variant="danger">
+                <Button 
+                  onClick={() => setshow(false)} 
+                  variant="danger">
                   Cancelar
                 </Button>
               </Form>
@@ -220,12 +238,15 @@ const Contacts = (props) => {
 
           {data.length <= 0 ? (
             <Alert variant="info">No tiene contactos registrados</Alert>
-          ) : (
+          ) 
+          : 
+          (
             <CardContacts
               cardContactos={classes.cardContactos}
               card={classes.cards}
               contactsData={data}
               cardColumn={classes.cardColumn}
+              btnmodal = { classes.btnModal } 
             />
           )}
         </Container>

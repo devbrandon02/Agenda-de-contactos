@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import fondoHome from '../assets/image/fondo-homepage.jpg';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import Header from './Header';
 import Footer from './Footer';
 
@@ -47,10 +48,12 @@ const Home = (props) => {
             { titleHome }
           </h1>
 						
-          <Button
+          <Link to={'/auth'}>
+            <Button
             color="primary">
             Ver Contactos
-          </Button>
+            </Button>
+          </Link>
 
         </Homepage>
       </div>

@@ -33,7 +33,7 @@ const routes = () => {
 
         <Route
           exact
-          path='/contacts'
+          path='/contacts/:id'
           component={getContacts}
         />
 

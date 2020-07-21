@@ -1,4 +1,4 @@
-let URL =  "http://192.168.0.23:4000/api/user";
+let URL =  "https://agendacontactocfcf.herokuapp.com/api/user";
 
 export const useeRegister = async ({ email, last , name , password }) => {
     let dataForm = {
